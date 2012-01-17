@@ -43,7 +43,6 @@ minetest.register_on_dignode(function(pos, oldnode, digger)
         local tools = item.tools
         local good_tool = false
         local player_tool = digger:get_wielded_item().name
-        print(player_tool)
         if tools ~= nil then
             for _, tool in ipairs(tools) do
                 if tool:sub(1, 1) == '~' then
@@ -51,7 +50,6 @@ minetest.register_on_dignode(function(pos, oldnode, digger)
                 else
                     good_tool = player_tool == tool
                 end
-                print(good_tool)
                 if good_tool then
                     break
                 end
