@@ -42,7 +42,12 @@ minetest.register_on_dignode(function(pos, oldnode, digger)
         end
         local tools = item.tools
         local good_tool = false
-        local player_tool = digger:get_wielded_item().name
+        local player_tool = digger:get_wielded_item()
+        if player_tool == nil then
+            player_tool = ""
+        else
+            player_tool = player_tool.name
+        end
         if tools ~= nil then
             for _, tool in ipairs(tools) do
                 if tool:sub(1, 1) == '~' then
