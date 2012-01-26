@@ -97,7 +97,7 @@ end
 
 function cart:on_step(dtime)
 	--self.object:setacceleration({x = 0, y = -10, z = 0})
-	if self.attached_to == false then
+    if self.attached_to == false then
 		return
 	end
 
@@ -123,7 +123,10 @@ function cart:on_step(dtime)
 								z = self.moving.z - pos_f.z}
 				needed = resize(needed, math.min(length(needed), speed))
 				self.object:setpos(move(pos_f, needed))
-			end
+			    -- move player that attached to this cart; FIXME
+		        local player = minetest.env:get_player_by_name(self.attached_to)
+		        player:setpos(self.object:getpos())
+            end
 			
 			return
 		end
@@ -193,12 +196,7 @@ function cart:on_step(dtime)
 		end
 
 		-- if not moved - stop
-		self.attached_to = false
-		
-		-- move player that attached to this cart; FIXME
-		--local player = minetest.env:get_player_by_name(self.attached_to)
-		--print(self.attached_to)
-		--player:setpos(self.object:getpos())
+		self.attached_to = false	
 	end
 end
 
@@ -233,8 +231,9 @@ function cart:on_punch(hitter)
 	self.health = self.health - 1
 	if self.health <= 0 then
 		self.object:remove()
-		hitter:add_to_inventory("craft vehicles:cart 1")
-	end
+		hitter:get_inventory():add_item("main", "vehicles:cart 1")
+	    return ""
+    end
 end
 
 function cart:on_activate(staticdata)
@@ -244,17 +243,17 @@ end
 minetest.register_entity("vehicles:cart", cart)
 
 minetest.register_craftitem("vehicles:cart", {
-	image = "vehicles_cart_inventory.png",
-	on_drop = function(item, dropper, pos)
-		minetest.env:add_entity({x = round(pos.x), y = round(pos.y), z = round(pos.z)}, "vehicles:cart")
-		return true
+	inventory_image = "vehicles_cart_inventory.png",
+	on_drop = function(itemstack, dropper, pos)
+        minetest.env:add_entity({x = round(pos.x), y = round(pos.y), z = round(pos.z)}, "vehicles:cart")
+		--return true
 	end
 })
 
 minetest.register_craft({
-	output = 'craft "vehicles:cart" 1',
+	output = '"vehicles:cart" 1',
 	recipe = {
-		{'craft "default:steel_ingot"', '', 'craft "default:steel_ingot"'},
-		{'craft "default:steel_ingot"', 'craft "default:steel_ingot"', 'craft "default:steel_ingot"'}
+		{'default:steel_ingot', '', 'default:steel_ingot'},
+		{'default:steel_ingot', 'default:steel_ingot', 'default:steel_ingot'}
 	}
 })
