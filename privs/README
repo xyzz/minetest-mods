@@ -1,0 +1,42 @@
+The text written below will be updated... some day
+
+Privileges mod for Minetest
+
+Inheritance
+	Privileges can be divided into privilege groups using ":" symbol. Good practice is to name your privileges like modname:privname[:something].
+	For example, mod that teleports players (let's name it "tp") can consists of such privileges:
+		tp -- global privilege, that includes others
+		tp:self -- teleport self somewhere
+		tp:self:coords -- teleport self to arbitrary position
+		tp:self:player -- teleport self to other player
+		tp:smb -- teleport somebody somewhere
+		tp:smb:coords -- teleport somebody to arbitrary position
+		tp:smb:coords -- teleport somebody to other player
+	Then you could give "tp" privilege to server administrators/moderators (remember that global admin who is specified in minetest.conf under "name = " parameter has all privileges), they therefore will have full access to all tp: privileges.
+	Also deeper is more important. So, if you have such privileges: 
+		a - allow
+		a:b - deny
+		a:b:c - nil
+		a:d - nil
+	and check for a:b:c it will return deny
+	and a:d will return allow, of course.
+
+Groups:
+	Another good practice is to divide players into groups. You (as a mod maker) can do it using such API call:
+		privs.register(name, [default, group])
+	Default value for "group" is just "nil". It means "everybody". You can use any groups in your mods, but preferably ones are:
+		admin, mod
+	Admin should have all access (?), by default global admin (specified in minetest.conf) have all privileges.
+
+Privs mod privileges [default values]:
+	privs:grant [0] -- grant privileges to players
+	privs:revoke [0] -- revoke privileges from players
+	privs:has [0] -- check for privilege
+	privs:list:self
+	privs:list:smb
+
+Chat commands:
+	/g priv [player] -- grant privilege to player (or yourself), requires privs:grant
+	/r priv [player] -- revoke, requires privs:revoke
+	/h priv [player] -- check for [player]'s privilege (or yours), requires privs:has
+	/l [player] -- list all non-default privileges, requires privs:list
