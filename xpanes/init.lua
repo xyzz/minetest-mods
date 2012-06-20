@@ -75,7 +75,7 @@ for i = 1, 15 do
     end
     minetest.register_node("xpanes:pane_"..i, {
         drawtype = "nodebox",
-        tile_images = {texture},
+        tile_images = {"xpanes_white.png", "xpanes_white.png", texture},
         paramtype = "light",
         groups = {snappy=2,cracky=3,oddly_breakable_by_hand=3},
         drop = "xpanes:pane",
