@@ -18,7 +18,6 @@ local function merge(lhs, rhs)
     return merged_table
 end
 
-
 local directions = {
     {x = 1, y = 0, z = 0},
     {x = 0, y = 0, z = 1},
@@ -104,7 +103,7 @@ minetest.register_on_placenode(update_nearby)
 minetest.register_on_dignode(update_nearby)
 
 minetest.register_craft({
-	output = 'xfences:fence 16',
+	output = 'xfences:fence 2',
 	recipe = {
 		{'default:stick', 'default:stick', 'default:stick'},
         {'default:stick', 'default:stick', 'default:stick'}
@@ -117,7 +116,6 @@ if REPLACE_DEFAULT_FENCES then
         interval = 0.1,
         chance = 1,
         action = function(pos)
-            print(dump(pos))
             minetest.env:add_node(pos, {name = "xfences:fence"})
         end
     })
