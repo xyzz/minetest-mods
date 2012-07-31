@@ -52,33 +52,52 @@ end
 local changed = false
 
 minetest.register_privilege("home", "Can use /home and /sethome commands")
+minetest.register_privilege("home_other", "Can use /home <player> command")
+minetest.register_privilege("sethome_other", "Can use /sethome <player> command")
 
 minetest.register_chatcommand("home", {
     privs = {home=true},
     description = "Teleport you to your home point",
     func = function(name, param)
+        if param ~= "" then
+            if minetest.get_player_privs(name)["home_other"] then
+                if not homepos[param] then
+                    minetest.chat_send_player(name, "The player don't have a home now! Set it using /sethome <player>.")
+                    return
+                end
+                player_name = param
+            else
+                minetest.chat_send_player(name, "You don't have permission to run this command (missing privileges: home_other)")
+                return
+            end
+        end
+        if player_name then pname = player_name else pname = name end
         local player = minetest.env:get_player_by_name(name)
         if player == nil then
             -- just a check to prevent server death
             return false
         end
-        if homepos[name] then
+        if homepos[pname] then
             local time = get_time()
             if cooldown ~= 0 and last_moved[name] ~= nil and time - last_moved[name] < cooldown then
                 minetest.chat_send_player(name, "You can teleport only once in "..cooldown.." seconds. Wait another "..round(cooldown - (time - last_moved[name]), 3).." secs...")
                 return true
             end
             local pos = player:getpos()
-            local dst = distance(pos, homepos[name])
-            if max_distance ~= 0 and distance(pos, homepos[name]) > max_distance then
-                minetest.chat_send_player(name, "You are too far away from your home. You must be "..round(dst - max_distance, 3).." meters closer to teleport to your home.")
+            local dst = distance(pos, homepos[pname])
+            if max_distance ~= 0 and distance(pos, homepos[pname]) > max_distance then
+                minetest.chat_send_player(name, "You are too far away from your home. You must be "..round(dst - max_distance, 3).." meters closer to teleport to home.")
                 return true
             end
             last_moved[name] = time
-            player:setpos(homepos[name])
+            player:setpos(homepos[pname])
             minetest.chat_send_player(name, "Teleported to home!")
         else
-            minetest.chat_send_player(name, "You don't have a home now! Set it using /sethome.")
+            if param ~= "" then
+                minetest.chat_send_player(name, "The player don't have a home now! Set it using /sethome <player>.")
+            else
+                minetest.chat_send_player(name, "You don't have a home now! Set it using /sethome.")
+            end
         end
     end,
 })
@@ -87,9 +106,18 @@ minetest.register_chatcommand("sethome", {
     privs = {home=true},
     description = "Set your home point",
     func = function(name, param)
+        if param ~= "" then
+            if minetest.get_player_privs(name)["sethome_other"] then
+                player_name = param
+            else
+                minetest.chat_send_player(name, "You don't have permission to run this command (missing privileges: sethome_other)")
+                return
+            end
+        end
+        if player_name then pname = player_name else pname = name end
         local player = minetest.env:get_player_by_name(name)
         local pos = player:getpos()
-        homepos[name] = pos
+        homepos[pname] = pos
         minetest.chat_send_player(name, "Home set!")
         changed = true
     end,
