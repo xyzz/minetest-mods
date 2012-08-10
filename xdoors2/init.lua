@@ -1,4 +1,4 @@
--- xDoors mod by xyz
+-- xDoors² mod by xyz
 
 -- remove default doors (or left/right version) and drop new doors
 local REMOVE_OTHER_DOORS = false
@@ -111,11 +111,11 @@ minetest.register_node("xdoors2:door", {
             }
             fdir = minetest.dir_to_facedir(dir)
         end
-        print(fdir)
 
         local t = 1
         local another_door = minetest.env:get_node({x = above.x + delta[fdir + 1].x, y = above.y, z = above.z + delta[fdir + 1].z})
-        if another_door.name == "xdoors2:door_bottom_1" then
+        if (another_door.name:sub(-1) == "1" and another_door.param2 == fdir)
+            or (another_door.name:sub(-1) == "2" and another_door.param2 == (fdir + 1) % 4) then
             t = 2
         end
 
