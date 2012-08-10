@@ -85,8 +85,8 @@ end
 
 minetest.register_node("signs:sign", {
     description = "Sign",
-    inventory_image = "default_sign_wall.png",
-    wield_image = "default_sign_wall.png",
+    inventory_image = "signs_sign.png",
+    wield_image = "signs_sign.png",
     stack_max = 1,
     node_placement_prediction = "",
     paramtype = "light",
