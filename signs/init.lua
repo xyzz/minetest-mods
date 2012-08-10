@@ -110,10 +110,10 @@ minetest.register_node("signs:sign", {
         local placer_pos = placer:getpos()
         if placer_pos then
             dir = {
-				x = above.x - placer_pos.x,
-				y = above.y - placer_pos.y,
-				z = above.z - placer_pos.z
-			}
+                x = above.x - placer_pos.x,
+                y = above.y - placer_pos.y,
+                z = above.z - placer_pos.z
+            }
         end
 
         local fdir = minetest.dir_to_facedir(dir)
