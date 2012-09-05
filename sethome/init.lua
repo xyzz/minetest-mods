@@ -107,6 +107,7 @@ minetest.register_globalstep(function(dtime)
                 output:write(v.x.." "..v.y.." "..v.z.." "..i.."\n")
             end
             io.close(output)
+            changed = false
         end
     end
 end)
