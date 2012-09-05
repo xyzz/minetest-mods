@@ -18,7 +18,7 @@ local is_top = function(name)
     return name:sub(14, 14) == "t"
 end
 
-local xdoors2_transform = function(pos, node)
+xdoors2_transform = function(pos, node)
     if is_top(node.name) then
         pos = {x = pos.x, y = pos.y - 1, z = pos.z}
     end
@@ -33,7 +33,7 @@ local xdoors2_transform = function(pos, node)
     minetest.env:add_node({x = pos.x, y = pos.y + 1, z = pos.z}, {name = "xdoors2:door_top_"..t, param2 = p2})
 end
 
-local xdoors2_destruct = function(pos, oldnode)
+xdoors2_destruct = function(pos, oldnode)
     if is_top(oldnode.name) then
         pos = {x = pos.x, y = pos.y - 1, z = pos.z}
     end
