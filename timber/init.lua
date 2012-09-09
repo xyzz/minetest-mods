@@ -1,5 +1,5 @@
 --[[
-	This program is free software: you can redistribute it and/or modify
+    This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
@@ -23,7 +23,7 @@ minetest.register_on_dignode(function(pos, node)
 			while minetest.env:get_node(np).name==name do
 				minetest.env:remove_node(np)
 				for _, item in ipairs(minetest.get_node_drops(name)) do
-					local tp = {x = np.x + math.random() - 0.5, y = np.y, z = np.z + math.random() - 0.5}
+					local tp = {x = np.x + math.random()/2 - 0.25, y = np.y, z = np.z + math.random()/2 - 0.25}
 					minetest.env:add_item(tp, item)
 				end
 				np={x=np.x, y=np.y+1, z=np.z}
