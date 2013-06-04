@@ -59,7 +59,7 @@ minetest.register_chatcommand("home", {
     privs = {home=true},
     description = "Teleport you to your home point",
     func = function(name, param)
-    local player_name=''
+	local player_name
         if param ~= "" then
             if minetest.get_player_privs(name)["home_other"] then
                 if not homepos[param] then
@@ -108,7 +108,7 @@ minetest.register_chatcommand("mine", {
     privs = {home=true},
     description = "Teleport you to your miner point",
     func = function(name, param)
-	local player_name=''
+	local player_name
         if param ~= "" then
             if minetest.get_player_privs(name)["home_other"] then
                 if not homepos[param..'_MINE'] then
@@ -142,12 +142,12 @@ minetest.register_chatcommand("mine", {
             end
             last_moved[name] = time
             player:setpos(homepos[pname])
-            minetest.chat_send_player(name, "Teleported to home!")
+            minetest.chat_send_player(name, "Teleported to mine!")
         else
             if param ~= "" then
                 minetest.chat_send_player(name, "The player don't have a mine now! Set it using /sethome <player> MINE.")
             else
-                minetest.chat_send_player(name, "You don't have a mine now! Set it using /sethome MINE. "..pname)
+                minetest.chat_send_player(name, "You don't have a mine now! Set it using /sethome MINE "..pname)
             end
         end
     end,
