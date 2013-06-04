@@ -59,6 +59,7 @@ minetest.register_chatcommand("home", {
     privs = {home=true},
     description = "Teleport you to your home point",
     func = function(name, param)
+	local player_name
         if param ~= "" then
             if minetest.get_player_privs(name)["home_other"] then
                 if not homepos[param] then
@@ -71,6 +72,7 @@ minetest.register_chatcommand("home", {
                 return
             end
         end
+	local pname=''
         if player_name then pname = player_name else pname = name end
         local player = minetest.env:get_player_by_name(name)
         if player == nil then
@@ -102,17 +104,70 @@ minetest.register_chatcommand("home", {
     end,
 })
 
-minetest.register_chatcommand("sethome", {
+minetest.register_chatcommand("mine", {
     privs = {home=true},
-    description = "Set your home point",
+    description = "Teleport you to your miner point",
     func = function(name, param)
+	local player_name
         if param ~= "" then
-            if minetest.get_player_privs(name)["sethome_other"] then
+            if minetest.get_player_privs(name)["home_other"] then
+                if not homepos[param..'_MINE'] then
+                    minetest.chat_send_player(name, "The player don't have a miner now! Set it using /sethome <player> MINE.")
+                    return
+                end
                 player_name = param
             else
-                minetest.chat_send_player(name, "You don't have permission to run this command (missing privileges: sethome_other)")
+                minetest.chat_send_player(name, "You don't have permission to run this command (missing privileges: home_other)")
                 return
             end
+        end
+	local pname=''
+        if player_name then pname = player_name..'_MINE' else pname = name..'_MINE' end
+        local player = minetest.env:get_player_by_name(name)
+        if player == nil then
+            -- just a check to prevent server death
+            return false
+        end
+        if homepos[pname] then
+            local time = get_time()
+            if cooldown ~= 0 and last_moved[name] ~= nil and time - last_moved[name] < cooldown then
+                minetest.chat_send_player(name, "You can teleport only once in "..cooldown.." seconds. Wait another "..round(cooldown - (time - last_moved[name]), 3).." secs...")
+                return true
+            end
+            local pos = player:getpos()
+            local dst = distance(pos, homepos[pname])
+            if max_distance ~= 0 and distance(pos, homepos[pname]) > max_distance then
+                minetest.chat_send_player(name, "You are too far away from your MINE. You must be "..round(dst - max_distance, 3).." meters closer to teleport to MINE.")
+                return true
+            end
+            last_moved[name] = time
+            player:setpos(homepos[pname])
+            minetest.chat_send_player(name, "Teleported to mine!")
+        else
+            if param ~= "" then
+                minetest.chat_send_player(name, "The player don't have a mine now! Set it using /sethome <player> MINE.")
+            else
+                minetest.chat_send_player(name, "You don't have a mine now! Set it using /sethome MINE "..pname)
+            end
+        end
+    end,
+})
+
+minetest.register_chatcommand("sethome", {
+    privs = {home=true},
+    description = "Set your home point or mine point",
+    func = function(name, param,mine)
+        if param ~= "" then
+	    if param ~= 'MINE' then 
+            	if minetest.get_player_privs(name)["sethome_other"] then
+                	player_name = param
+           	else
+                	minetest.chat_send_player(name, "You don't have permission to run this command (missing privileges: sethome_other)")
+                	return
+            	end
+	    else
+	    	player_name = name..'_MINE'
+	    end
         end
         if player_name then pname = player_name else pname = name end
         local player = minetest.env:get_player_by_name(name)
