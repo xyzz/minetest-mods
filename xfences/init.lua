@@ -74,7 +74,7 @@ for i = 0, 15 do
     local texture = "default_wood.png"
     minetest.register_node("xfences:fence_"..i, {
         drawtype = "nodebox",
-        tile_images = {texture},
+        tiles = {texture},
         paramtype = "light",
         groups = {snappy=2,choppy=2,oddly_breakable_by_hand=2},
         drop = "xfences:fence",
@@ -92,9 +92,9 @@ end
 
 minetest.register_node("xfences:fence", {
     description = "Wooden Fence",
-    tile_images = {"xfences_space.png"},
-    inventory_image = "default_fence.png",
-    wield_image = "default_fence.png",
+    tiles = {"xfences_space.png"},
+    inventory_image = "default_fence_overlay.png^default_wood.png^default_fence_overlay.png^[makealpha:255,126,126",
+    wield_image = "default_fence_overlay.png^default_wood.png^default_fence_overlay.png^[makealpha:255,126,126",
     node_placement_prediction = "",
     on_construct = update_fence
 })
